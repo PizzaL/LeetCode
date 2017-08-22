@@ -7,21 +7,31 @@ using namespace std;
 class Solution {
 public:
     vector<int> countBits(int num) {
-        0 1 2 3 4 5 6 7 8 9 10
-        0 1 1 2 1 2 2 3 1 
+    	vector<int> res;
+    	res.push_back(0);
+    	if (num == 0)
+    		return res;
+    	int k=1;
+    	while (k*2<=num)
+    	{
+    		int oldSize=res.size();
+    		for (size_t i=0; i<oldSize; ++i)
+    		{
+    			res.push_back(res[i]+1);
+    		}
+    		k*=2;
+    	}
+    	for (size_t i=k; i<=num; ++i)
+    	{
+    		res.push_back(1+res[i-k]);
+    	}
+    	return res;
     }
 };
 
 int main()
 {
 	Solution solution;
-	vector<int> nums;
-	nums.push_back(2);
-	nums.push_back(7);
-	nums.push_back(11);
-	nums.push_back(15);
-	int target = 9;
-	vector<int> res = solution.twoSum(nums, target);
-	cout << res[0] << ", " << res[1] << endl;
+	solution.countBits(5);
 	return 0;
 }
