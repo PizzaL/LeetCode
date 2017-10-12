@@ -6,33 +6,25 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> twoSum(vector<int>& nums, int target) {
-        for (size_t i=0; i<nums.size(); ++i)
+    bool isPalindrome(int x) {
+        int reverseNum = 0;
+        if (x!=0 && x%10 == 0)
+            return false;
+        while (x > reverseNum)
         {
-        	vector<int>::iterator pos = find(nums.begin(), nums.end(), target-nums[i]);
-        	if ( pos != nums.end() && pos - nums.begin() != i)
-        	{
-        		vector<int> res;
-        		res.push_back(i);
-        		res.push_back(pos-nums.begin());
-        		return res;
-        	}
+            reverseNum=reverseNum*10 + x%10;
+            x /= 10;
         }
-    	vector<int> res;
-   		return res;
-   	}
-};	
+
+        cout << 99999999*99999999<< endl;
+                return reverseNum == x || reverseNum/10 == x;
+
+    }
+};
 
 int main()
 {
 	Solution solution;
-	vector<int> nums;
-	nums.push_back(2);
-	nums.push_back(7);
-	nums.push_back(11);
-	nums.push_back(15);
-	int target = 9;
-	vector<int> res = solution.twoSum(nums, target);
-	cout << res[0] << ", " << res[1] << endl;
+    cout << solution.isPalindrome(9);
 	return 0;
 }

@@ -6,43 +6,28 @@ using namespace std;
 
 class Solution {
 public:
-
-    int findMinRadius(vector<int>& houses, int lastHeaterIdx, int curr)
-    {
-        int res = 0;
-        for (size_t i=lastHeaterIdx+1; i<curr; ++i)
-        {
-            int dis = min(houses[i]-houses[lastHeaterIdx], houses[curr]-houses[i]);
-            res = max(dis, res);
-        }
-        return res;
-    }
-
     int findRadius(vector<int>& houses, vector<int>& heaters) {
         sort(houses.begin(), houses.end());
         sort(heaters.begin(), heaters.end());
-        int idx = 0;
-        int res = 0;
-        int lastHeater = 0;
-        for (size_t i=0; i<houses.size(); ++i)
+        int res = 0; 
+        int rightHeater = 0;
+        for (size_t i = 0; i<houses.size(); ++i)  
         {
-            if (houses[i] >= heaters[idx])
+            while (rightHeater<heaters.size() && heaters[rightHeater] <= houses[i])
+                ++rightHeater;
+            if (rightHeater == 0)
             {
-                if (lastHeater == 0)
-                {   // first heater
-                    res = houses[i]-houses[0];
-                } else 
-                {
-                    res = max(res, findMinRadius(houses, lastHeaterIdx, i));
-                }
-                ++idx;
-                lastHeaterIdx = i;
+                res = max(res, heaters[rightHeater]-houses[i]);
+            } else if (rightHeater == heaters.size() )
+            {
+                res = max(res, houses[i]-heaters[rightHeater-1]);
             }
-        }
-        if (lastHeaterIdx!=houses.size()-1)
-        {
-            res = max(res, houses[houses.size()-1]-houses[lastHeaterIdx]);
-        }
+            else
+            {
+                int dist = min(heaters[rightHeater]-houses[i], houses[i]-heaters[rightHeater-1]);
+                res = max(res, dist);
+            }
+        } 
         return res;
     }
 };
@@ -50,5 +35,12 @@ public:
 int main()
 {
 	Solution solution;
+    vector<int> houses;
+    houses.push_back(1);
+    houses.push_back(2);
+    houses.push_back(3);
+    vector<int> heaters;
+    heaters.push_back(1);
+    cout << solution.findRadius(houses, heaters);
 	return 0;
 }
