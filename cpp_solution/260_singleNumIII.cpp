@@ -6,25 +6,30 @@ using namespace std;
 
 class Solution {
 public:
-    bool isPalindrome(int x) {
-        int reverseNum = 0;
-        if (x!=0 && x%10 == 0)
-            return false;
-        while (x > reverseNum)
+    vector<int> singleNumber(vector<int>& nums) {
+        int diff = 0;
+        for (auto &num : nums)
         {
-            reverseNum=reverseNum*10 + x%10;
-            x /= 10;
+            diff ^= num;
         }
-
-        cout << 99999999*99999999<< endl;
-                return reverseNum == x || reverseNum/10 == x;
-
+        int flag = diff & -diff;
+        vector<int> res = {0, 0};
+        for (auto &num : nums)
+        {
+            if (num&flag)
+            {
+                res[0] = res[0]^num;
+            } else
+            {
+                res[1] = res[1]^num;
+            }
+        }
+        return res;
     }
 };
 
 int main()
 {
 	Solution solution;
-    cout << solution.isPalindrome(9);
 	return 0;
 }
