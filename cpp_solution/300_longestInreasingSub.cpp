@@ -16,10 +16,10 @@ public:
         }
         else {
             int curr = (start+end)/2;
-            if (nums[i]>nums[curr])
+            if (nums[i]>tail[curr])
                 updateTail(tail, curr+1, end, nums, i);
             else 
-                updateTail(tail, start, curr-1, nums, i);
+                updateTail(tail, start, curr, nums, i);
         }
     }
 
