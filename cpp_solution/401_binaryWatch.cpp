@@ -6,90 +6,70 @@ using namespace std;
 
 class Solution {
 public:
-	int getHours(bool hours[], int k = -1)
+	int powerOf2(int x)
 	{
-		int res = 0;
-		int p=1;
-		if (k != -1)
+		int res = 1;
+		for (size_t i=0;i<x; ++i)
 		{
-			hours[k]=true;	
-		}
-		for (size_t i=0; i<4; ++i)
-		{
-			if (hours[i])
-				res+=p;
-			p*=2;
-		}
-		if (k != -1)
-		{
-			hours[k]=false;	
-		}
-		return res;
-	}
-	int getMins(bool mins[], int k = -1)
-	{
-		int res = 0;
-		int p=1;
-		if (k != -1)
-		{
-			mins[k]=true;	
-		}
-		for (size_t i=0; i<6; ++i)
-		{
-			if (mins[i])
-				res+=p;
-			p*=2;
-		}
-		if (k != -1)
-		{
-			mins[k]=false;	
+			res*=2;
 		}
 		return res;
 	}
 
-	void getTime(bool hours[], bool mins[], int num, vector<string>& res)
+	void getValue(int h, int start, vector<bool>& bits, vector<int>& res, int maxValue)
 	{
-		if (num == 0)
+		if (h==0)
 		{
-			string time = to_string(getHours(hours) )+":";
-			int minutes = getMins(mins);
-			if (minutes<10)
-				time+="0"+to_string(minutes);
-			else
-				time+=to_string(minutes);
-			cout << time << endl;
-			res.push_back( time );
-			return ;
-		}
-		for (size_t i=0; i<6; ++i)
-		{
-			if (mins[i] == false && getMins(mins, i) < 60)
+			int r = 0;
+			for(size_t i=0; i<bits.size(); ++i)
 			{
-				mins[i] = true;
-				getTime(hours, mins, num-1, res);
-				mins[i] = false;
+				if (bits[i])
+					r+=powerOf2(i);
+			}
+			if (r<maxValue)
+			{
+				res.push_back(r);
 			}
 		}
-		for (size_t i=0; i<4; ++i)
-		{
-			if (hours[i] == false && getHours(hours, i)<12)
+		else {
+			for (size_t i=start; i<bits.size(); ++i)
 			{
-				hours[i] = true;
-				getTime(hours, mins, num-1, res);
-				hours[i] = false;
+				if (!bits[i])
+				{
+					bits[i] = true;
+					getValue(h-1, i+1, bits, res, maxValue);
+					bits[i] = false;
+				}
+			}
+		}
+	}
+
+	void buildTime(int h, int m, vector<string>& res)
+	{
+		vector<int> hours;
+		vector<bool> hBits(4, false);
+		getValue(h, 0, hBits, hours, 12);
+		vector<int> minutes;
+		vector<bool> mBits(6, false);
+		getValue(m, 0, mBits, minutes, 60);
+		for (auto hour:hours)
+		{
+			for (auto min:minutes)
+			{
+				string curr = to_string(hour)+":"+( min<10?"0":"")+to_string(min);
+				res.push_back(curr);
 			}
 		}
 	}
 
     vector<string> readBinaryWatch(int num) {
-    	bool hours[4];
-    	for (size_t i=0; i<4; ++i)
-    		hours[i] = false;
-    	bool mins[6];
-    	for (size_t i=0; i<6; ++i)
-    		mins[i] = false;
         vector<string> res;
-        getTime(hours, mins, num, res);
+        for (size_t i=0;i<=min(num, 4);++i)
+		{
+			if (num-i>=6)
+				continue;
+			buildTime(i, num-i, res);
+		}
         return res;
     }
 };
@@ -97,6 +77,8 @@ public:
 int main()
 {
 	Solution solution;
-	solution.readBinaryWatch(4);
+	vector<string> res = solution.readBinaryWatch(2);
+	for(auto& str:res)
+		cout << str << endl;
 	return 0;
 }
