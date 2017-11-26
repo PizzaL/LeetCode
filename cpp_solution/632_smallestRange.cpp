@@ -6,82 +6,60 @@ using namespace std;
 
 class Solution {
 public:
-    void insertNum(vector<std::vector<int> >& currList, const int num)
+    void insert(vector<pair<int, int> >& resList, vector<int>& numList)
     {
-        if (currList[0][0] > num)
+        int pos = 0;
+        for (size_t i=0; i<resList.size(); ++i)
         {
-            vector<int>& curr = currList[0];
-            curr[0]=num;
-            return;
-        } else if (currList[0][1] >= num)
-        {
-            return ;
-        }
-        int pos = currList.size()-1;
-        for (size_t i=1; i<currList.size(); ++i)
-        {
-            vector<int>& curr=currList[i];
-            if (num < curr[0])
+            int curr = max(resList[i].second, numList[pos])-min(resList[i].first, numList[pos]);
+            int temp = 0;
+            while (pos+temp+1 < numList.size())
             {
-                pos = i-1; 
-                break;
-            } else if (num<=curr[1])
-            {
-                return ;
+                int next = max(resList[i].second, numList[pos+temp+1])-min(resList[i].first, numList[pos+temp+1]);
+                if (curr>next)
+                {
+                    pos+=temp+1;
+                    temp = 0;
+                    curr = next;
+                } else if (curr==next)
+                {
+                    ++temp;
+                } else
+                {
+                    break;
+                }
             }
-        }
-        if (pos == currList.size()-1)
-        {
-            currList[pos][1] = num;
-            return ;
-        }
-        vector<int>& left=currList[pos];
-        vector<int>& right=currList[pos+1];
-        if (right[1]-num < left[1]-left[0])
-        {
-            right[0] = num;
-        } else
-        {
-            left[1] = num;
+            resList[i].first=min( resList[i].first, numList[pos]);
+            resList[i].second=max(resList[i].second, numList[pos]);
         }
     }
 
-    void updateCurrentList(vector<vector<int> >& currList, const vector<int> nums)
+    void print(vector<pair<int, int> >& res)
     {
-        if (currList.size() == 0)
-        {
-            for (size_t i=0; i<nums.size(); ++i)
-            {
-                vector<int> newRange(2, nums[i]);
-                currList.push_back(newRange);
-            }
-            return ; 
-        }
-        for (size_t i=0; i<nums.size(); ++i)
-        {
-            insertNum(currList, nums[i]);
-        }
-    }
-
-    vector<int> findSmallest(vector<vector<int> > currList)
-    {
-        vector<int>& s = currList[0];
-        for (size_t i=0; i<currList.size(); ++i)
-        {
-            if (currList[i][1]-currList[i][0] < s[1]-s[0])
-                s = currList[i];
-        }
-        return s;
+        cout << "Res set" << endl;
+        for (auto& elem:res)
+            cout << elem.first << " " << elem.second << endl;
     }
 
     vector<int> smallestRange(vector<vector<int> >& nums) {
-        vector<vector<int> > currList;
-        for (size_t i=0; i<nums.size(); ++i)
+        vector<pair<int, int> > resList;
+        for (auto& num:nums[0])
+            resList.push_back(pair<int, int>(num, num));
+        for (auto& numList:nums)
         {
-            sort(nums.begin(), nums.end());
-            updateCurrentList(currList, nums[i]);
+            insert(resList, numList);
+            print(resList);
         }
-        return findSmallest(currList);
+        int size = 100000*2;
+        vector<int> res(2, 0);
+        for (auto& element:resList)
+            if (element.second-element.first<size)
+            {
+                size = element.second-element.first;
+                res[0] = element.first;
+                res[1] = element.second;
+            }
+        return res;
     }
 };
 
