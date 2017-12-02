@@ -4,20 +4,16 @@
 
 using namespace std;
 
+struct TreeNode {
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ };
+ 
 class Solution {
 public:
-    bool isPalindrome(int x) {
-        int reverseNum = 0;
-        if (x!=0 && x%10 == 0)
-            return false;
-        while (x > reverseNum)
-        {
-            reverseNum=reverseNum*10 + x%10;
-            x /= 10;
-        }
-
-        cout << 99999999*99999999<< endl;
-                return reverseNum == x || reverseNum/10 == x;
+    void recoverTree(TreeNode* root) {
 
     }
 };
@@ -25,6 +21,5 @@ public:
 int main()
 {
 	Solution solution;
-    cout << solution.isPalindrome(9);
 	return 0;
 }
