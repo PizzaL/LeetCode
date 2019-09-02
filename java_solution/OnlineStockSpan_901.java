@@ -1,27 +1,34 @@
-import java.util.Vector;
+
+import java.util.Stack;
+import javafx.util.Pair;
 
 class StockSpanner {
-    private Vector<Integer> prices;
-    private Vector<Integer> spans;
+    private Stack<Pair<Integer,Integer>> priceStack;
     
     public StockSpanner() {
-        prices = new Vector<Integer>();
-        spans = new Vector<Integer>();
+        priceStack = new Stack<Pair<Integer,Integer>>();
     }
     
     public int next(int price) {
-        prices.add(price);
-        if (spans.isEmpty()) {
-            spans.add(1);
+        if ( priceStack.empty() ) {
+            priceStack.add(new Pair<Integer, Integer>(price, 1));
+            return 1;
         }
         else {
-            int index = prices.size()-2;
-            while (index >= 0 && price >= prices.get(index)) {
-                index = index - spans.get(index);
+            int res = 1;
+            while ( !priceStack.empty() ) {
+                Pair<Integer, Integer> last = priceStack.peek();
+                if ( last.getKey() > price )  {
+                    break;
+                }
+                else {
+                    priceStack.pop();
+                    res += last.getValue();
+                }
             }
-            spans.add(prices.size()-1-index);
+            priceStack.push(new Pair<Integer, Integer>(price, res));
+            return res;
         }
-        return spans.get(spans.size()-1);
     }
 }
 
